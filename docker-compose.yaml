@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  db:
+    build:
+       context: ./Database
+       dockerfile: Dockerfile
+     container_name: backend-service
+     environment:
+        MYSQL_ROOT_PASSWORD: 1234
+        MYSQL_DATABASE: studentapp
+      ports:
+        - "3306:3306"
+    
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: backend-service
+    environment:
+      DB_HOST:db
+      DB_PORT: 3306
+      DB_NAME: studentapp
+      DB_USER: root
+      DB_PASSWORD: 1234
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    
+  #frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: frontend-service
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      #
